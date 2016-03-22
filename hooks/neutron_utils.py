@@ -703,6 +703,7 @@ def configure_ovs():
             add_bridge_port(EXT_BRIDGE, ext_port_ctx['ext_port'])
 
         portmaps = DataPortContext()()
+        # TODO: fudge in external network?
         bridgemaps = parse_bridge_mappings(config('bridge-mappings'))
         for provider, br in bridgemaps.iteritems():
             add_bridge(br)
