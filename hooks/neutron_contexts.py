@@ -113,6 +113,10 @@ class L3AgentContext(OSContextGenerator):
 
         if config('external-network-id'):
             ctxt['ext_net_id'] = config('external-network-id')
+
+        if config('external-network-bridge') is not None:
+            ctxt['external_network_bridge'] = config('external-network-bridge')
+
         if config('plugin'):
             ctxt['plugin'] = config('plugin')
         if api_settings['enable_dvr']:

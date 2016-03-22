@@ -67,6 +67,19 @@ class TestL3AgentContext(CharmTestCase):
                            'plugin': 'ovs'})
 
     @patch('neutron_contexts.NeutronAPIContext')
+    def test_blank_external_bridge_port(self,  _NeutronAPIContext):
+        _NeutronAPIContext.return_value = \
+            DummyNeutronAPIContext(return_value={'enable_dvr': False})
+        self.test_config.set('run-internal-router', 'none')
+        self.test_config.set('external-network-bridge', '')
+        self.eligible_leader.return_value = False
+        self.assertEquals(neutron_contexts.L3AgentContext()(),
+                          {'agent_mode': 'legacy',
+                           'plugin': 'ovs',
+                           'handle_internal_only_router': False,
+                           'external_network_bridge': ''})
+
+    @patch('neutron_contexts.NeutronAPIContext')
     def test_hior_leader(self, _NeutronAPIContext):
         _NeutronAPIContext.return_value = \
             DummyNeutronAPIContext(return_value={'enable_dvr': False})

@@ -104,6 +104,15 @@ options:
       Optional configuration to set the external-network-id. Only needed when
       configuring multiple external networks and should be used in conjunction
       with run-internal-router.
+  external-network-bridge:
+    type: string
+    default:
+    description: |
+      By default, external router ports are connected to br-ex which is then
+      connected to the physical port listed in ext-port.  Set this blank
+      to instead configure the external networks using bridge_mappings and
+      the provider settings on the network.  This allows for multiple external
+      networks, external VLAN networks, etc.
   rabbit-user:
     type: string
     description: RabbitMQ user
