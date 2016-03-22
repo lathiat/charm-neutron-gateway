@@ -1,0 +1,3 @@
+{% for dev in devs.splitlines() -%}
+SUBSYSTEM=="net", KERNEL=="{{ dev }}", ATTR{mtu}="{{ mtu }}"
+{% endfor -%}
