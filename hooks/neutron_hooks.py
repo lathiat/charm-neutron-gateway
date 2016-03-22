@@ -41,7 +41,7 @@ from charmhelpers.core.sysctl import create as create_sysctl
 
 from charmhelpers.contrib.charmsupport import nrpe
 
-import sys
+import sys, subprocess
 from neutron_utils import (
     L3HA_PACKAGES,
     register_configs,
@@ -67,6 +67,7 @@ from neutron_utils import (
     REQUIRED_INTERFACES,
     check_optional_relations,
     NEUTRON_COMMON,
+    remove_file,
 )
 
 hooks = Hooks()
@@ -149,6 +150,11 @@ def config_changed():
     # Setup legacy ha configurations
     update_legacy_ha_files()
 
+    # Remove legacy MTU & network configs
+    remove_file('/etc/init/os-charm-phy-nic-mtu.conf')
+
+    # Trigger udev update for MTU
+    subprocess.check_call(["udevadm", "trigger", "--subsystem-match=net"])
 
 @hooks.hook('upgrade-charm')
 def upgrade_charm():
