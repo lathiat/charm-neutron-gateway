@@ -67,6 +67,7 @@ from neutron_utils import (
     REQUIRED_INTERFACES,
     check_optional_relations,
     NEUTRON_COMMON,
+    remove_file,
 )
 
 hooks = Hooks()
@@ -149,6 +150,11 @@ def config_changed():
     # Setup legacy ha configurations
     update_legacy_ha_files()
 
+    # Remove legacy MTU & network configs
+    remove_file('/etc/init/os-charm-phy-nic-mtu.conf')
+
+    # Trigger udev update for MTU
+    check_call(["udevadm", "--subsystem-match=net"])
 
 @hooks.hook('upgrade-charm')
 def upgrade_charm():

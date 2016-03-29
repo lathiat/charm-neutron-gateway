@@ -268,7 +268,7 @@ def use_l3ha():
     return NeutronAPIContext()()['enable_l3ha']
 
 EXT_PORT_CONF = '/etc/init/ext-port.conf'
-PHY_NIC_MTU_CONF = '/etc/init/os-charm-phy-nic-mtu.conf'
+PHY_NIC_MTU_RULES = '/etc/udev/rules.d/charm-neutron-gateway-mtu.rules'
 TEMPLATES = 'templates'
 
 QUANTUM_CONF = "/etc/quantum/quantum.conf"
@@ -314,6 +314,9 @@ NEUTRON_SHARED_CONFIG_FILES = {
                           NeutronGatewayContext()],
         'services': ['neutron-metadata-agent']
     },
+    PHY_NIC_MTU_RULES: {
+        'hook_contexts': [PhyNICMTUContext()],
+    }
 }
 NEUTRON_SHARED_CONFIG_FILES.update(NOVA_CONFIG_FILES)
 
@@ -374,10 +377,6 @@ NEUTRON_OVS_CONFIG_FILES = {
         'hook_contexts': [ExternalPortContext()],
         'services': ['ext-port']
     },
-    PHY_NIC_MTU_CONF: {
-        'hook_contexts': [PhyNICMTUContext()],
-        'services': ['os-charm-phy-nic-mtu']
-    }
 }
 NEUTRON_OVS_CONFIG_FILES.update(NEUTRON_SHARED_CONFIG_FILES)
 
@@ -425,10 +424,6 @@ NEUTRON_OVS_ODL_CONFIG_FILES = {
         'hook_contexts': [ExternalPortContext()],
         'services': ['ext-port']
     },
-    PHY_NIC_MTU_CONF: {
-        'hook_contexts': [PhyNICMTUContext()],
-        'services': ['os-charm-phy-nic-mtu']
-    }
 }
 NEUTRON_OVS_ODL_CONFIG_FILES.update(NEUTRON_SHARED_CONFIG_FILES)
 
@@ -713,11 +708,6 @@ def configure_ovs():
             for port, _br in portmaps.iteritems():
                 if _br == br:
                     add_bridge_port(br, port, promisc=True)
-
-        # Ensure this runs so that mtu is applied to data-port interfaces if
-        # provided.
-        service_restart('os-charm-phy-nic-mtu')
-
 
 def copy_file(src, dst, perms=None, force=False):
     """Copy file to destination and optionally set permissionss.
