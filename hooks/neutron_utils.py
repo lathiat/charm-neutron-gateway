@@ -316,6 +316,7 @@ NEUTRON_SHARED_CONFIG_FILES = {
     },
     PHY_NIC_MTU_RULES: {
         'hook_contexts': [PhyNICMTUContext()],
+        'services': []
     }
 }
 NEUTRON_SHARED_CONFIG_FILES.update(NOVA_CONFIG_FILES)
